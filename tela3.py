@@ -29,6 +29,8 @@ class View:
         self.treeview.column("Nome", width=300)
         self.treeview.column("Telefone", width=300)
         self.treeview.column("Profissão", width=300)
+        self.treeview.bind("<<TreeviewSelect>>", self.exibir_informacoes)
+
         scrollbar = ttk.Scrollbar(self.janela4)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         self.treeview.config(yscrollcommand=scrollbar.set)
@@ -38,30 +40,14 @@ class View:
 
         self.janela4.mainloop()  
 
-    def exibir(self):
-        self.cursor.execute("SELECT id, nome, telefone, profissao FROM prestadores")
-        prestadores = self.cursor.fetchall()
+    def exibir_informacoes(self, event):
+        item_selecionado = self.treeview.focus()
 
+        if item_selecionado:
+            valores = self.treeview.item(item_selecionado)["values"]
+            # Exiba as informações do prestador selecionado
+            tk.messagebox.showinfo("Informações do Prestador", f"Id: {valores[0]}\nNome: {valores[1]}\nTelefone: {valores[2]}\nProfissão: {valores[3]}")
     
-        for prestador in prestadores:
-            self.treeview.insert("", "end", values=(prestador[0], prestador[1], prestador[2], prestador[3]))
-
-    def excluir(self):
-        item_selecionado = self.treeview.focus()
-        if item_selecionado:
-            valores = self.treeview.item(item_selecionado)["values"]
-            if tk.messagebox.askyesno("Excluir Usuário", f"Deseja excluir o usuário {valores[0]}?"):
-                self.cursor.execute("DELETE FROM prestadores WHERE id=?", (valores[0],))
-                self.conexao.commit()
-                self.treeview.delete(item_selecionado)
-                tk.messagebox.showinfo("Sucesso", "Usuário excluído com sucesso.")
-
-    def editar(self):
-        item_selecionado = self.treeview.focus()
-
-        if item_selecionado:
-            valores = self.treeview.item(item_selecionado)["values"]
-            tk.messagebox.showinfo("Editar Usuário", f"Nome: {valores[0]}\nEmail: {valores[1]}")
 
 
 t = View()
