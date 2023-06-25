@@ -1,25 +1,28 @@
 from tkinter import *
-from cliente import *
 from db import Database
-import tkinter as tk
-from tela3 import View
-from prestador import *
+from tkinter import messagebox
+
 def chamacliente():
-   janela.destroy()
-   TelaCadastro()
+    from cadastrocliente import TelaCadastro
+    janela.destroy()
+    TelaCadastro()
+
 def chamapres():
-   janela.destroy()
-   CadastroPres()
+    from loginPres import LoginProfissional
+    janela.destroy()
+    LoginProfissional()
 
 def vizualizaPres():
+    from exibepres import Vizualiza
     usuario = caixaUser.get()
     senha = caixaSenha.get()
-    if db.verificaLogin(usuario, senha):
-        janela.iconify()
-        View()
+    user_id = db.verificaLogin(usuario, senha)
+    
+    if user_id:
+        janela.destroy()
+        Vizualiza(user_id)  # Passar o ID para a próxima tela
     else:
         messagebox.showerror("Erro", "Usuário ou senha inválidos.")
-
 
 db = Database(r"C:\Users\Jussara\OneDrive\Área de Trabalho\trabalho senia\clientes.db")
 
@@ -32,7 +35,7 @@ labelcor2.pack()
 
 # LOGO
 titulo = Label(text="S-SOLUTION", font=("Comic Sans MS", 30, "bold"), bg='black', fg='orange')
-titulo.place(x=550, y=50)
+titulo.place(x=550, y=100)
 titulo.config(relief='ridge', bd=7,)
 
 # LOGIN
@@ -42,8 +45,8 @@ labelUser = Label(text='Usuario', font=('Courier New', 12), bg='#D3D3D3')
 labelUser.place(x=950, y=200)
 caixaUser = Entry(width=15)
 caixaUser.place(x=1029, y=200)
-caixaUser.config(relief='flat',)
-labelSenha = Label(text='senha', font=('Courier New', 12), bg='#D3D3D3')
+caixaUser.config(relief='flat')
+labelSenha = Label(text='Senha', font=('Courier New', 12), bg='#D3D3D3')
 labelSenha.place(x=950, y=220)
 caixaSenha = Entry(width=18)
 caixaSenha.place(x=1010, y=220)
@@ -56,10 +59,10 @@ Entrar.config(relief='groove')
 cadastro = Button(text='Cadastre-se', font=('Courier New', 8), bg='#D3D3D3', command=chamacliente)
 cadastro.place(x=1000, y=290)
 cadastro.config(relief='groove')
-labelpres = Label(text='Trabalhe conosco', font=('Courier New', 20), bg='#D3D3D3')
-labelpres.place(x=950, y=350)
-centralprestador = Button(text='Ir para', font=('Courier New', 10), bg='#D3D3D3', command=chamapres)
-centralprestador.place(x=1000, y=400)
+labelpres = Label(text='Perfil Profissional', font=('Courier New', 20), bg='#D3D3D3')
+labelpres.place(x=900, y=550)
+centralprestador = Button(text='->', font=('Courier New', 15), bg='#D3D3D3', command=chamapres)
+centralprestador.config(relief='groove')
+centralprestador.place(x=1220, y=550)
 
 mainloop()
-
